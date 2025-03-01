@@ -1,5 +1,5 @@
 # Use an official Java runtime as the base image
-FROM openjdk:21-jdk-alpine
+FROM openjdk:21-jdk
 
 # Check Java version inside the container (optional for debugging)
 RUN java -version
