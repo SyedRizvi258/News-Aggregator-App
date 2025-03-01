@@ -9,6 +9,7 @@ WORKDIR /app
 
 # Copy the jar file into the container
 COPY target/newsaggregator-0.0.1-SNAPSHOT.jar /app/newsaggregator.jar
+COPY .env /app/.env
 
 # Expose the port the app runs on
 EXPOSE 8082
