@@ -1,0 +1,90 @@
+.container {
+  min-width: 600px;
+  margin: 50px auto;
+}
+
+.form {
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.error-message {
+  color: red;
+  font-size: 0.9rem;
+  margin-top: 5px; /* Space between input and error message */
+  display: block;
+  word-wrap: break-word;
+  white-space: pre-line;
+}
+
+.success-message {
+  color: green;
+  font-size: 0.9rem;
+  margin-top: 5px; /* Space between input and error message */
+  display: block;
+  word-wrap: break-word;
+  white-space: normal;
+}
+
+.form h1 {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.form .form-control {
+  margin-bottom: 10px;
+}
+
+.form button {
+  margin-top: 5px;
+}
+
+.form p {
+  margin-top: 5px;
+}
+
+.form p a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.form p a:hover {
+  text-decoration: underline;
+}
+
+.password-container {
+  position: relative; /* Enables absolute positioning for child elements */
+  margin-bottom: 10px; /* Add space between the input and any following elements */
+}
+
+.password-toggle {
+  position: absolute; /* Aligns the button inside the input field */
+  right: 10px; /* Aligns to the right edge */
+  top: 50%; /* Vertically centers */
+  transform: translateY(-50%); /* Centers vertically */
+  background: none; /* Optional: Transparent background */
+  border: none; /* Removes border for cleaner look */
+  color: #007bff; /* Button text color */
+  cursor: pointer; /* Pointer cursor for clarity */
+  font-size: 0.9rem; /* Smaller button text */
+}
+
+.password-toggle:focus {
+  outline: 2px solid #007bff; /* Blue focus ring for better visibility */
+  outline-offset: 2px;
+}
+
+.form button:hover {
+  background-color: #0056b3;
+  border-color: #0056b3;
+}
+
+.brand {
+  font-size: 3rem;
+  font-weight: bold;
+  color: #007bff !important;
+  transition: color 0.3s ease-in-out;
+  padding-bottom: 20px;
+}
