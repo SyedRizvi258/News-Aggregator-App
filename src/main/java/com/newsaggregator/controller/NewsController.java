@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("/api/news")
-@CrossOrigin(origins = "http://localhost:3001", allowCredentials = "true")
+@CrossOrigin(origins = {"http://localhost:3001", "https://quickbyte-t50m.onrender.com"}, allowCredentials = "true")
 public class NewsController {
 
     @Autowired

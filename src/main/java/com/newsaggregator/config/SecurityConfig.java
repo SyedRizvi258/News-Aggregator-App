@@ -40,7 +40,7 @@ public class SecurityConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:3001/", "https://your-frontend-url.com") // Replace with my frontend URL
+                        .allowedOrigins("http://localhost:3001/", "https://quickbyte-t50m.onrender.com")
                         .allowedMethods("GET", "POST", "PUT", "DELETE")
                         .allowCredentials(true);
             }
