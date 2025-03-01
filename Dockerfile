@@ -1,6 +1,9 @@
 # Use an official Java runtime as the base image
 FROM openjdk:17-jdk-alpine
 
+# Check Java version inside the container (optional for debugging)
+RUN java -version
+
 # Set the working directory inside the container
 WORKDIR /app
 
