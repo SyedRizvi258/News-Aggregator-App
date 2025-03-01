@@ -17,7 +17,7 @@ public class SecurityConfig {
     // Define PasswordEncoder bean
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(); // You can use other encoders like Argon2PasswordEncoder as well
+        return new BCryptPasswordEncoder();
     }
 
     // Define SecurityFilterChain bean
