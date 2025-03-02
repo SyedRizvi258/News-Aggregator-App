@@ -11,7 +11,9 @@ import io.github.cdimascio.dotenv.Dotenv;
 public class CloudBasedNewsAggregatorApplication {
 
 	// Load environment variables from .env file
-	static Dotenv dotenv = Dotenv.load();
+	static Dotenv dotenv = Dotenv.configure()
+                      .ignoreIfMissing()
+                      .load();
 
 	static {
 		// Set the environment variables for Spring Boot to use
