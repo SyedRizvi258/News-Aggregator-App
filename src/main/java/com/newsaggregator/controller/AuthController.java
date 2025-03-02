@@ -127,7 +127,7 @@ public class AuthController {
             .path("/") // Available throughout the entire app
             .maxAge(24 * 60 * 60) // 1 day
             .sameSite("Lax")
-            .domain("onrender.com")
+            .domain("news-aggregator-app-backend.onrender.com")
             .build();
             
             LoginResponse loginResponse = new LoginResponse("Login successful", token, user.getUsername(), user.getId());
