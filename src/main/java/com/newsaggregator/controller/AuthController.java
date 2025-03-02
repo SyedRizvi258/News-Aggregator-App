@@ -126,7 +126,8 @@ public class AuthController {
             .secure(true) // Set to true in production (HTTPS)
             .path("/") // Available throughout the entire app
             .maxAge(24 * 60 * 60) // 1 day
-            .sameSite("None")
+            .sameSite("Lax")
+            .domain("onrender.com")
             .build();
             
             LoginResponse loginResponse = new LoginResponse("Login successful", token, user.getUsername(), user.getId());
