@@ -1,5 +1,4 @@
-# Use an official Java runtime as the base image
-FROM maven:3.9.5-openjdk-21 AS build
+FROM maven:3-openjdk-21 AS build
 COPY . .
 RUN mvn clean package -DskipTests
 
