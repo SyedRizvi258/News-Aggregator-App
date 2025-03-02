@@ -1,18 +1,9 @@
 # Use an official Java runtime as the base image
-FROM openjdk:21-jdk
+FROM maven:3.9.5-openjdk-21 AS build
+COPY . .
+RUN mvn clean package -DskipTests
 
-# Check Java version inside the container (optional for debugging)
-RUN java -version
-
-# Set the working directory inside the container
-WORKDIR /app
-
-# Copy the jar file into the container
-COPY target/newsaggregator-0.0.1-SNAPSHOT.jar /app/newsaggregator.jar
-COPY .env /app/.env
-
-# Expose the port the app runs on
+FROM openjdk:21-slim
+COPY --from=build /target/newsaggregator-0.0.1-SNAPSHOT.jar newsaggregator.jar
 EXPOSE 8082
-
-# Run the Spring Boot application
 ENTRYPOINT ["java", "-jar", "newsaggregator.jar"]
