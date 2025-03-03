@@ -197,12 +197,6 @@ public class AuthController {
         }
     }
 
-    // Use this endpoint to ping every 10 mins to keep Render service awake to avoid cold starts
-    @GetMapping("/health")
-    public String healthCheck() {
-        return "OK";
-    }
-
     // Add global exception handling for validation errors
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> handleValidationExceptions(MethodArgumentNotValidException ex) {
