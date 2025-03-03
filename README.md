@@ -1,5 +1,5 @@
 ## Live Demo: 
-Coming Soon
+https://quickbyte-t50m.onrender.com/
 
 # News Aggregator App (Java)
 -  Designed RESTful APIs with Spring Boot to deliver live news using NewsAPI, supporting dynamic content delivery.
