@@ -2,10 +2,12 @@ package com.newsaggregator.service;
 
 import java.util.UUID;
 import java.util.regex.Pattern;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
+import org.springframework.mail.javamail.MimeMessageHelper;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -77,7 +79,11 @@ public class UserService {
         userRepository.save(user);
 
         // Send verification email
-        sendVerificationEmail(user);
+        try {
+            sendVerificationEmail(user);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to send email notification: " + e.getMessage());
+        }
 
         // Return the saved user
         return user;
@@ -86,36 +92,44 @@ public class UserService {
     @Value("${app.base-url}")
     private String baseUrl;
 
-    private void sendVerificationEmail(User user) {
+    private void sendVerificationEmail(User user) throws MessagingException {
         String verificationUrl = baseUrl + "/api/auth/verify-email?token=" + user.getEmailVerificationToken();
         
-        // Create a simple email message
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(user.getEmail());
-        message.setSubject("QuickByte Email Verification");
-        message.setText("Hi " + user.getUsername() + ",\n\n" +
-                        "Thank you for registering with QuickByte. To verify your email address, please click on the link below:\n\n" +
-                        verificationUrl + "\n\n" +
-                        "If you did not register for this account, please ignore this email.\n\n" +
-                        "Best regards,\nThe QuickByte Team");
+        MimeMessage mimeMessage = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
 
-        mailSender.send(message);
+        helper.setTo(user.getEmail());
+        helper.setSubject("QuickByte Email Verification");
+
+        String htmlContent = "<p>Hi " + user.getUsername() + ",</p>"
+            + "<p>Thank you for registering with QuickByte. To verify your email address, please click the link below:</p>"
+            + "<p><a href=\"" + verificationUrl + "\">Verify Email Address</a></p>"
+            + "<p>If you did not register for this account, please ignore this email.</p>"
+            + "<p>Best regards,<br>The QuickByte Team</p>";
+
+        helper.setText(htmlContent, true); // true = HTML content
+
+        mailSender.send(mimeMessage);
     }
 
-    private void sendPasswordChangedEmail(User user) {
+    private void sendPasswordChangedEmail(User user) throws MessagingException {
         String passwordChangeUrl = baseUrl + "/api/auth/verify-email?token=" + user.getEmailVerificationToken();
 
-        // Create a simple email message
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(user.getEmail());
-        message.setSubject("QuickByte Password Update Verification");
-        message.setText("Hi " + user.getUsername() + ",\n\n" +
-                        "Your password has been updated successfully. To verify your password update, please click on the link below:\n\n" +
-                        passwordChangeUrl + "\n\n" +
-                        "If you did not make this change, please update your password.\n\n" +
-                        "Best regards,\nThe QuickByte Team");
-        
-        mailSender.send(message);
+        MimeMessage mimeMessage = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
+
+        helper.setTo(user.getEmail());
+        helper.setSubject("QuickByte Password Update Verification");
+
+        String htmlContent = "<p>Hi " + user.getUsername() + ",</p>"
+            + "<p>Your password has been updated successfully. To verify your password update, please click the link below:</p>"
+            + "<p><a href=\"" + passwordChangeUrl + "\">Verify Password Update</a></p>"
+            + "<p>If you did not make this change, please update your password.</p>"
+            + "<p>Best regards,<br>The QuickByte Team</p>";
+
+        helper.setText(htmlContent, true); // true = HTML content
+
+        mailSender.send(mimeMessage);
     }
 
     public boolean verifyEmail(String token) {

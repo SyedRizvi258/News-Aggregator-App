@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import '../LoginPage.css';
+import '../Form.css';
 
 const ForgotPasswordForm = ({ onSubmit, error, isSubmitting, success, message }) => {
     const [email, setEmail] = useState('');

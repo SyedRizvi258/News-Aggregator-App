@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import '../LoginPage.css';
+import '../Form.css';
 
 const SignUpForm = ({ onSubmit, error, success }) => {
   const [username, setUsername] = useState('');

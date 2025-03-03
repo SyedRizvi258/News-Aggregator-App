@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import '../LoginPage.css';
+import '../Form.css';
 
 const LoginForm = ({ onSubmit, error, isSubmitting, success }) => {
   const [email, setEmail] = useState('');
