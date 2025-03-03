@@ -2,6 +2,7 @@ package com.newsaggregator.controller;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -27,6 +28,7 @@ import com.newsaggregator.dto.LoginResponse;
 import com.newsaggregator.model.User;
 import com.newsaggregator.security.JwtTokenUtil;
 import com.newsaggregator.service.UserService;
+import com.newsaggregator.repository.UserRepository;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -39,6 +41,9 @@ public class AuthController {
     
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
@@ -120,21 +125,10 @@ public class AuthController {
                 .sameSite("None")
                 .build();
             
-            // Set the username as a separate cookie
-            ResponseCookie usernameCookie = ResponseCookie.from("username", user.getUsername())
-            .httpOnly(false) // Set to false so frontend can access it
-            .secure(true) // Set to true in production (HTTPS)
-            .path("/") // Available throughout the entire app
-            .maxAge(24 * 60 * 60) // 1 day
-            .sameSite("Lax")
-            .domain("news-aggregator-app-backend.onrender.com")
-            .build();
-            
             LoginResponse loginResponse = new LoginResponse("Login successful", token, user.getUsername(), user.getId());
 
             HttpHeaders headers = new HttpHeaders();
             headers.add(HttpHeaders.SET_COOKIE, jwtCookie.toString());
-            headers.add(HttpHeaders.SET_COOKIE, usernameCookie.toString());
 
             return ResponseEntity.ok()
                 .headers(headers)
@@ -153,9 +147,18 @@ public class AuthController {
 
         if (token != null && jwtTokenUtil.validateToken(token, jwtTokenUtil.getSubjectFromToken(token))) {
             String userId = jwtTokenUtil.getSubjectFromToken(token); // Get userId from token
+
+            // Fetch username from db
+            Optional<User> userOptional = userRepository.findById(userId);
+            if (userOptional.isEmpty()) {
+                return ResponseEntity.status(404).body(Map.of("error", "User not found"));
+            }
+            String username = userOptional.get().getUsername();
+            
             return ResponseEntity.ok().body(Map.of(
                 "message", "User is authenticated",
-                "userId", userId
+                "userId", userId,
+                "username", username
             ));
         } else {
             return ResponseEntity.status(401).body(Map.of("error", "Not authenticated"));

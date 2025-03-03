@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import Cookies from 'js-cookie';
 
 const AuthContext = createContext();
 
@@ -19,8 +18,7 @@ export const AuthProvider = ({ children }) => {
 
         if (response.ok) {
           const data = await response.json();
-          const storedUsername = Cookies.get('username');
-          setAuth({ isLoggedIn: true, username: storedUsername, userId: data.userId });
+          setAuth({ isLoggedIn: true, username: data.username, userId: data.userId });
         } else {
           setAuth({ isLoggedIn: false, username: null, userId: null });
         }

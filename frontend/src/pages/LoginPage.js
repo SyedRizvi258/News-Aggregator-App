@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import LoginForm from '../components/LoginForm';
 import { useAuth } from '../contexts/AuthContext';
-import Cookies from 'js-cookie';
 
 const LoginPage = () => {
     const { login } = useAuth(); // Destructure login function from AuthContext
@@ -30,13 +29,7 @@ const LoginPage = () => {
                 throw new Error(responseData.error || 'Login failed'); // Use the 'error' field from the backend
             }
 
-            //login();  // Call the login function to update state
-            
-            // Fetch username from cookies
-            const storedUsername = Cookies.get('username'); 
-
-            // Update auth state with username
-            login(storedUsername || "User", responseData.userId); 
+            login(responseData.username, responseData.userId);
 
             setSuccess(true); // Set the success state to true
             navigate('/home'); // Redirect to the home page
