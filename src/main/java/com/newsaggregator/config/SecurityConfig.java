@@ -30,7 +30,7 @@ public class SecurityConfig {
             .and()
             .authorizeHttpRequests(authorizeRequests ->
                 authorizeRequests
-                    .requestMatchers("/api/auth/register", "/api/auth/login", "/api/auth/verify-email", "/api/auth/logout", "/api/auth/change-password", "/api/auth/verify", "/api/news/top-headlines", "/api/news/search", "/api/news/articles", "/api/favorites/**").permitAll() // Allow unauthenticated access
+                    .requestMatchers("/api/auth/register", "/api/auth/login", "/api/auth/verify-email", "/api/auth/logout", "/api/auth/change-password", "/api/auth/health", "/api/auth/verify", "/api/news/top-headlines", "/api/news/search", "/api/news/articles", "/api/favorites/**").permitAll() // Allow unauthenticated access
                     .anyRequest().authenticated() // Secure all other routes
             )
             .csrf().disable() // Disable CSRF for APIs, if you're not using cookies or sessions
