@@ -71,7 +71,7 @@ public class AuthController {
             
             // Return success message as JSON
             Map<String, String> response = new HashMap<>();
-            response.put("message", "You have been registered successfully! Check your email for the verification link.");
+            response.put("message", "You have been registered successfully! A verification link has been sent to your email. Be sure to check your inbox and spam folder.");
             return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
             // Return a structured JSON error response
@@ -187,7 +187,7 @@ public class AuthController {
         try {
             userService.changePassword(request.getEmail(), request.getNewPassword());
             // Return structured response for success
-            ChangePasswordResponse changePasswordResponse = new ChangePasswordResponse("Your password has been updated successfully! Check your email for the verification link.");
+            ChangePasswordResponse changePasswordResponse = new ChangePasswordResponse("Your password has been updated successfully! A verification link has been sent to your email. Be sure to check your inbox and spam folder.");
             return ResponseEntity.ok().body(changePasswordResponse);
         } catch (RuntimeException e) {
             // Return structured response for error
