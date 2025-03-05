@@ -3,10 +3,16 @@ package com.newsaggregator.model;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
-
 import java.util.ArrayList;
 import java.util.List;
 
+
+/*
+ * FavoriteArticle.java
+ * 
+ * This class represents a user's favorite article in the application.
+ * It is mapped to the "favorites" collection in the MongoDB database.
+ */
 @Document(collection = "favorites")
 public class FavoriteArticle {
 

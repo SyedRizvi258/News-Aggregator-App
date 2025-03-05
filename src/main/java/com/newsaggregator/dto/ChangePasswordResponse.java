@@ -1,5 +1,12 @@
 package com.newsaggregator.dto;
 
+
+/*
+ * ChangePasswordResponse.java
+ * 
+ * This class represents the response object for changing a user's password.
+ * It contains a message field to indicate the status of the password change operation.
+ */
 public class ChangePasswordResponse {
 
     private String message;
@@ -13,7 +20,6 @@ public class ChangePasswordResponse {
     public String getMessage() {
         return message;
     }
-
     public void setMessage(String message) {
         this.message = message;
     }

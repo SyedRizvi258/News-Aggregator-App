@@ -3,7 +3,9 @@ package com.newsaggregator.controller;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -30,32 +32,42 @@ import com.newsaggregator.security.JwtTokenUtil;
 import com.newsaggregator.service.UserService;
 import com.newsaggregator.repository.UserRepository;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.Valid;
 
+/*
+ * AuthController.java
+ * 
+ * This controller class defines the REST API endpoints for user authentication and authorization.
+ */
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = {"http://localhost:3001", "https://quickbyte-t50m.onrender.com"}, allowCredentials = "true")
+@CrossOrigin(origins = {"http://localhost:3001", "https://quickbyte-t50m.onrender.com"}, allowCredentials = "true") // Allow cross-origin requests from the specified URLs
 public class AuthController {
     
     @Autowired
-    private UserService userService;
+    private UserService userService; // Service class for user operations
 
     @Autowired
-    private UserRepository userRepository;
+    private UserRepository userRepository; // To interact with the database for user operations
 
     @Autowired
-    private JwtTokenUtil jwtTokenUtil;
+    private JwtTokenUtil jwtTokenUtil; // Utility class for JWT token operations
 
     public AuthController(JwtTokenUtil jwtTokenUtil) {
         this.jwtTokenUtil = jwtTokenUtil;
     }
     
+
+    /**
+     * Register a new user.
+     * 
+     * @param user The user object containing the registration details
+     * @param bindingResult The validation result of the user object
+     * @return A response entity with a success message or error message
+     */
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@Valid @RequestBody User user, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            // Collect error messages from binding result and return them in a structured response
+            // Collect error messages and return them in a structured response
             Map<String, String> errorResponse = new HashMap<>();
             
             for (FieldError error : bindingResult.getFieldErrors()) {
@@ -81,10 +93,19 @@ public class AuthController {
         }
     }
 
+
+    /**
+     * Verify the user's email using the verification token.
+     * 
+     * @param token The verification token sent to the user's email
+     * @return A response entity with a success message or error message
+     */
     @GetMapping("/verify-email")
     public ResponseEntity<String> verifyEmail(@RequestParam("token") String token) {
         // Verify the email using the token
         boolean isVerified = userService.verifyEmail(token);
+
+        // Return a success message or error message in HTML format
         if (isVerified) {
             return ResponseEntity.ok(
             "<html>" +
@@ -107,6 +128,13 @@ public class AuthController {
         }
     }
 
+
+    /**
+     * Login a user and generate a JWT token.
+     * 
+     * @param loginRequest The login request object containing the user's email and password
+     * @return A response entity with a success message or error message
+     */
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody LoginRequest loginRequest) {
         try {
@@ -125,11 +153,14 @@ public class AuthController {
                 .sameSite("None")
                 .build();
             
+            // Return a structured response with the JWT token and user details
             LoginResponse loginResponse = new LoginResponse("Login successful", token, user.getUsername(), user.getId());
 
+            // Set the JWT cookie in the response header
             HttpHeaders headers = new HttpHeaders();
             headers.add(HttpHeaders.SET_COOKIE, jwtCookie.toString());
 
+            // Return a response with a header containing the JWT cookie and the response body
             return ResponseEntity.ok()
                 .headers(headers)
                 .body(loginResponse);
@@ -141,10 +172,18 @@ public class AuthController {
         }
     }
 
+
+    /**
+     * Verify if a user is authenticated using the JWT token.
+     * 
+     * @param request The HTTP request object
+     * @return A response entity with a success message or error message
+     */
     @GetMapping("/verify")
     public ResponseEntity<?> verifyUser(HttpServletRequest request) {
         String token = jwtTokenUtil.getTokenFromCookies(request); // Extract token from cookies
 
+        // Check if the token is valid and the user exists
         if (token != null && jwtTokenUtil.validateToken(token, jwtTokenUtil.getSubjectFromToken(token))) {
             String userId = jwtTokenUtil.getSubjectFromToken(token); // Get userId from token
 
@@ -155,16 +194,25 @@ public class AuthController {
             }
             String username = userOptional.get().getUsername();
             
+            // Return a structured response with user details
             return ResponseEntity.ok().body(Map.of(
                 "message", "User is authenticated",
                 "userId", userId,
                 "username", username
             ));
         } else {
+            // Return an error response if the user is not authenticated
             return ResponseEntity.status(401).body(Map.of("error", "Not authenticated"));
         }
     }
 
+
+    /**
+     * Logout a user by expiring the JWT token.
+     * 
+     * @param response The HTTP response object
+     * @return A response entity with a success message
+     */
     @PostMapping("/logout")
     public ResponseEntity<String> logout(HttpServletResponse response) {
         // Create an expired cookie to remove the existing token
@@ -179,9 +227,17 @@ public class AuthController {
         // Set the expired cookie in the response header
         response.addHeader("Set-Cookie", expiredCookie.toString());
 
+        // Return a success message
         return ResponseEntity.ok("Logged out successfully");
     }
 
+
+    /**
+     * Change the user's password.
+     * 
+     * @param request The change password request object containing the user's email and new password
+     * @return A response entity with a success message or error message
+     */
     @PostMapping("/change-password")
     public ResponseEntity<?> changePassword(@Valid @RequestBody ChangePasswordRequest request) {
         try {
@@ -197,7 +253,13 @@ public class AuthController {
         }
     }
 
-    // Add global exception handling for validation errors
+
+    /**
+     * Handle validation exceptions for request body.
+     * 
+     * @param ex The exception object
+     * @return A response entity with a map of field errors
+     */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> handleValidationExceptions(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();

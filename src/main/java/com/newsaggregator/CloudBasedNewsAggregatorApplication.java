@@ -3,9 +3,18 @@ package com.newsaggregator;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
-
 import io.github.cdimascio.dotenv.Dotenv;
 
+/*
+ * CloudBasedNewsAggregatorApplication.java
+ *
+ * This is the main class that initializes and runs the Spring Boot application.
+ * 
+ * - Loads environment variables from the .env file using Dotenv.
+ * - Sets the environment variables for Spring Boot to use.
+ * - Enables scheduling for background tasks (via @EnableScheduling).
+ * - Starts the application using SpringApplication.run().
+ */
 @SpringBootApplication
 @EnableScheduling
 public class CloudBasedNewsAggregatorApplication {
@@ -30,6 +39,7 @@ public class CloudBasedNewsAggregatorApplication {
 		System.setProperty("NEWSAPI_KEY", dotenv.get("NEWSAPI_KEY"));
 	}
 
+	// Main method to start the application
 	public static void main(String[] args) {
 		SpringApplication.run(CloudBasedNewsAggregatorApplication.class, args);
 	}

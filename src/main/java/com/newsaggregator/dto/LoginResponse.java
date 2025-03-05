@@ -1,5 +1,12 @@
 package com.newsaggregator.dto;
 
+
+/*
+ * LoginResponse.java
+ * 
+ * This class represents the response object for user login.
+ * It contains the message, token, username, and userId fields.
+ */
 public class LoginResponse {
 
     private String message;
@@ -19,7 +26,6 @@ public class LoginResponse {
     public String getMessage() {
         return message;
     }
-
     public void setMessage(String message) {
         this.message = message;
     }
@@ -27,7 +33,6 @@ public class LoginResponse {
     public String getToken() {
         return token;
     }
-
     public void setToken(String token) {
         this.token = token;
     }
@@ -35,7 +40,6 @@ public class LoginResponse {
     public String getUsername() {
         return username;
     }
-
     public void setUsername(String username) {
         this.username = username;
     }

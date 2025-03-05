@@ -6,6 +6,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
+
+/*
+ * EmailServiceConfig.java
+ * 
+ * This configuration class sets up the JavaMailSender bean for sending emails.
+ */
 @Configuration
 public class EmailServiceConfig {
 
@@ -17,16 +23,17 @@ public class EmailServiceConfig {
 
     @Bean
     public JavaMailSender getJavaMailSender() {
-        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-        mailSender.setHost("smtp.gmail.com");
+        JavaMailSenderImpl mailSender = new JavaMailSenderImpl(); // Create a new instance of JavaMailSenderImpl
+        mailSender.setHost("smtp.gmail.com"); // Set the host to Gmail SMTP server
         mailSender.setPort(587);
 
         mailSender.setUsername(emailUsername);
         mailSender.setPassword(emailPassword);
 
+        // Set the properties for the mail sender
         java.util.Properties props = mailSender.getJavaMailProperties();
         props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.starttls.enable", "true"); 
         props.put("mail.smtp.timeout", "5000");
 
         return mailSender;

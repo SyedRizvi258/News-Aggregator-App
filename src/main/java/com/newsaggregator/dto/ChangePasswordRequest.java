@@ -3,6 +3,13 @@ package com.newsaggregator.dto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
+
+/*
+ * ChangePasswordRequest.java
+ * 
+ * This class represents the request object for changing a user's password.
+ * It contains the email and new password fields.
+ */
 public class ChangePasswordRequest {
     
     @NotBlank(message = "Email is required")
@@ -16,7 +23,6 @@ public class ChangePasswordRequest {
     public String getEmail() {
         return email;
     }
-
     public void setEmail(String email) {
         this.email = email;
     }
@@ -24,7 +30,6 @@ public class ChangePasswordRequest {
     public String getNewPassword() {
         return newPassword;
     }
-
     public void setNewPassword(String newPassword) {
         this.newPassword = newPassword;
     }

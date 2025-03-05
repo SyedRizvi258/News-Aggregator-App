@@ -6,13 +6,19 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import java.util.Objects;
 
-@Document(collection = "users") // Maps this class to the "users" collection in MongoDB.
+
+/*
+ * User.java
+ * 
+ * This class represents a user in the application.
+ * It is mapped to the "users" collection in the MongoDB database.
+ */
+@Document(collection = "users")
 public class User {
 
-    @Id // Marks this field as the unique identifier for the document.
-    private String id; // Use a String for MongoDB IDs (MongoDB uses ObjectId by default).
+    @Id
+    private String id; 
 
-    // Other fields with validation annotations.
     @NotBlank(message = "Username is required")
     private String username;
 
@@ -23,14 +29,14 @@ public class User {
     @NotBlank(message = "Password is required")
     private String password;
 
-    // Additional fields for email verification
     private boolean emailVerified = false;
     private String emailVerificationToken;
 
-    // Default constructor (required by Spring Data)
-    public User() {}
+    // Default constructor
+    public User() {
+    }
 
-    // Parameterized constructor for convenience
+    // Parameterized constructor
     public User(String username, String email, String password) {
         this.username = username;
         this.email = email;
@@ -41,7 +47,6 @@ public class User {
     public String getId() {
         return id;
     }
-
     public void setId(String id) {
         this.id = id;
     }
@@ -49,7 +54,6 @@ public class User {
     public String getUsername() {
         return username;
     }
-
     public void setUsername(String username) {
         this.username = username;
     }
@@ -57,7 +61,6 @@ public class User {
     public String getEmail() {
         return email;
     }
-
     public void setEmail(String email) {
         this.email = email;
     }
@@ -65,7 +68,6 @@ public class User {
     public String getPassword() {
         return password;
     }
-
     public void setPassword(String password) {
         this.password = password;
     }
@@ -73,7 +75,6 @@ public class User {
     public boolean isEmailVerified() {
         return emailVerified;
     }
-
     public void setEmailVerified(boolean emailVerified) {
         this.emailVerified = emailVerified;
     }
@@ -81,12 +82,11 @@ public class User {
     public String getEmailVerificationToken() {
         return emailVerificationToken;
     }
-
     public void setEmailVerificationToken(String emailVerificationToken) {
         this.emailVerificationToken = emailVerificationToken;
     }
 
-    // Overridden equals and hashCode methods for comparison
+    // Overridden equals, hashCode, and toString methods
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -102,7 +102,6 @@ public class User {
         return Objects.hash(id, username, email);
     }
 
-    // Overridden toString for debugging
     @Override
     public String toString() {
         return "User{" +

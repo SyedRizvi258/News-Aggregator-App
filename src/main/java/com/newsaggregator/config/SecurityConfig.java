@@ -8,21 +8,39 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
-import java.util.Arrays;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import java.util.Arrays;
 
+
+/*
+ * SecurityConfig.java
+ * 
+ * This class configures security settings for the application.
+ */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
-    // Define PasswordEncoder bean
+    /**
+     * Configure a password encoder bean for encoding and verifying passwords.
+     * 
+     * @return A PasswordEncoder object
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    // Define SecurityFilterChain bean
+
+    /**
+     * Configure security settings for the application.
+     * This method defines the security filter chain that determines which requests are secured.
+     * 
+     * @param http An HttpSecurity object to configure security settings
+     * @return A SecurityFilterChain object with configured security settings
+     * @throws Exception If an error occurs while configuring security settings
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -38,7 +56,15 @@ public class SecurityConfig {
         return http.build();
     }
 
-     @Bean
+
+    /**
+     * Configure CORS (Cross-Origin Resource Sharing) settings.
+     * This allows the frontend to make requests to the backend from a different origin.
+     * 
+     * 
+     * @return A CorsConfigurationSource object with allowed origins, methods, headers, and credentials.
+     */
+    @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList("https://quickbyte-t50m.onrender.com", "http://localhost:3001"));

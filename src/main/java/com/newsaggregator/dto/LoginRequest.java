@@ -1,5 +1,12 @@
 package com.newsaggregator.dto;
 
+
+/*
+ * LoginRequest.java
+ * 
+ * This class represents the request object for user login.
+ * It contains the email and password fields.
+ */
 public class LoginRequest {
     
     private String email;
@@ -9,7 +16,6 @@ public class LoginRequest {
     public String getEmail() {
         return email;
     }
-
     public void setEmail(String email) {
         this.email = email;
     }
@@ -17,7 +23,6 @@ public class LoginRequest {
     public String getPassword() {
         return password;
     }
-
     public void setPassword(String password) {
         this.password = password;
     }

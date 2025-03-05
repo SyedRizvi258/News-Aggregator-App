@@ -3,11 +3,19 @@ package com.newsaggregator.model;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+
+/*
+ * NewsArticle.java
+ * 
+ * This class represents a news article in the application.
+ * It is mapped to the "news" collection in the MongoDB database.
+ */
 @Document(collection = "news")
 public class NewsArticle {
     
     @Id
     private String id;
+    
     private String title;
     private String description;
     private String url;
