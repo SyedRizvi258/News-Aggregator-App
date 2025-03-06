@@ -1,6 +1,13 @@
 import React, { useState } from 'react';
 import ForgotPasswordForm from '../components/ForgotPasswordForm';
 
+
+/*
+* ForgotPasswordPage
+*
+* A page that allows users to reset their password.
+* It contains the ForgotPasswordForm component.
+*/
 const ForgotPasswordPage = () => {
     const [error, setError] = useState(null);
     const [message, setMessage] = useState(null);
@@ -25,13 +32,14 @@ const ForgotPasswordPage = () => {
                 throw new Error(responseData.error || 'Failed to change password.');
             }
 
+            // Display success message and reset fields
             setMessage(responseData.message);
             setSuccess(true);
 
             resetFields();
 
         } catch (err) {
-            setError(err.message);
+            setError(err.message); // Display error message
         } finally {
             setIsSubmitting(false);
         }

@@ -4,21 +4,41 @@ import { useNavigate } from 'react-router-dom';
 import '../WelcomePage.css';
 import Navbar from "../components/Navbar";
 
+
+/*
+* WelcomePage
+*
+* The main page of the application that displays news articles after login.
+* It allows users to search for articles, view top headlines, and view articles by category.
+* It also allows users to view and manage their favorite articles.
+*/
 const WelcomePage = () => {
+  // Navigation and auth
   const { logout, auth } = useAuth(); // Get logout function and auth state from context
   const navigate = useNavigate(); // For navigating after logout
-  const [articles, setArticles] = useState([]); // State to store news articles
-  const [searchQuery, setSearchQuery] = useState(''); // State for search input
-  const [loading, setLoading] = useState(true); // State for loading spinner
-  const [error, setError] = useState(null); // State for error handling
-  const [currentPage, setCurrentPage] = useState(1); // Current page number
-  const [pageSize] = useState(12); // Number of articles per page
-  const [submittedQuery, setSubmittedQuery] = useState('');
-  const [mode, setMode] = useState("headlines"); // "headlines" or "search" or "category" or "favorites"
+
+  // Mode and category selection
+  const [mode, setMode] = useState("headlines"); // modes: "headlines", "search", "category", "favorites"
   const [selectedCategory, setSelectedCategory] = useState(""); // Selected category
   const [resetCategory, setResetCategory] = useState(false); // Reset category selection
+
+  // Article data
+  const [articles, setArticles] = useState([]); // State to store news articles
   const [favoriteArticles, setFavoriteArticles] = useState(new Set()); // Set of favorite article IDs
+
+  // Search
+  const [searchQuery, setSearchQuery] = useState(''); // State for search input
+  const [submittedQuery, setSubmittedQuery] = useState(''); // State for submitted search query
+
+  // Pagination
+  const [currentPage, setCurrentPage] = useState(1); // Current page number
+  const [pageSize] = useState(12); // Number of articles per page
+
+  // UI states
+  const [loading, setLoading] = useState(true); // State for loading spinner
   const [loadingFavorites, setLoadingFavorites] = useState(false); // Loading state for favorites
+  const [error, setError] = useState(null); // State for error handling
+
 
   // Fetch top headlines
   const fetchTopHeadlines = useCallback(async () => {
@@ -35,6 +55,7 @@ const WelcomePage = () => {
         throw new Error(data.error || 'Failed to fetch top headlines');
       }
 
+      // Update articles state with top headlines
       setArticles(data);
     } catch (error) {
       setError(error.message);
@@ -43,7 +64,8 @@ const WelcomePage = () => {
     }
   }, [currentPage, pageSize]);
 
-  // Fetch articles based on search query and pagination
+
+  // Fetch articles based on search query
   const handleSearch = useCallback(async () => {
     if (!submittedQuery.trim()) return; // Avoid making an empty request
     setLoading(true);
@@ -59,6 +81,7 @@ const WelcomePage = () => {
         throw new Error(data.error || 'Failed to fetch search results');
       }
 
+      // Update articles state with search results
       setArticles(data);
     } catch (error) {
       setError(error.message);
@@ -67,10 +90,12 @@ const WelcomePage = () => {
     }
   }, [submittedQuery, currentPage, pageSize]);
 
+
   // Fetch articles based on category
   const fetchCategoryArticles = useCallback(async (category) => {
     setLoading(true);
     setError(null);
+    
     try {
       const response = await fetch(
         `${process.env.REACT_APP_BASE_URL}/api/news/search?query=${category}&page=${currentPage}&pageSize=${pageSize}`
@@ -81,6 +106,7 @@ const WelcomePage = () => {
         throw new Error(data.error || "Failed to fetch category articles");
       }
 
+      // Update articles state with chosen category articles
       setArticles(data);
     } catch (error) {
       setError(error.message);
@@ -89,11 +115,12 @@ const WelcomePage = () => {
     }
   }, [currentPage, pageSize]);
 
+
   // Fetch user's favorite articles
   const fetchFavoriteArticles = useCallback(async () => {
-    if (!auth.isLoggedIn) return;
-    
+    if (!auth.isLoggedIn) return; // Don't fetch if user is not logged in
     setLoadingFavorites(true);
+    
     try {
       const response = await fetch(
         `${process.env.REACT_APP_BASE_URL}/api/favorites/${auth.userId}`
@@ -111,30 +138,29 @@ const WelcomePage = () => {
       
       const data = await response.json();
       
-      // If we're in "favorites" mode, set these as the articles to display
+      // If in "favorites" mode, then set these as the articles to display
       if (mode === "favorites") {
         setArticles(data);
         setLoading(false);
       }
       
-      // Create a Set of favorite article IDs for efficient lookup
+      // Create a set of favorite article IDs for efficient lookup
       const favoriteIds = new Set(data.map(article => article.id));
       setFavoriteArticles(favoriteIds);
     } catch (error) {
       console.error("Error fetching favorites:", error);
-      // Don't set the main error state to avoid disrupting the main content view
     } finally {
       setLoadingFavorites(false);
     }
   }, [auth.isLoggedIn, auth.userId, mode]);
 
-  // Display only favorite articles
+
+  // Display user's favorite articles
   const showFavorites = useCallback(async () => {
     if (!auth.isLoggedIn) {
       setError("Please log in to view favorites");
       return;
     }
-    
     setMode("favorites");
     setLoading(true);
     setError(null);
@@ -144,6 +170,7 @@ const WelcomePage = () => {
         `${process.env.REACT_APP_BASE_URL}/api/favorites/${auth.userId}`
       );
       
+      // If user has no favorites, set articles to empty array
       if (response.status === 204) {
         // No content
         setArticles([]);
@@ -155,14 +182,14 @@ const WelcomePage = () => {
       }
       
       const data = await response.json();
-      console.log("Favorites data:", data); // Add this log to see what's coming back
-      setArticles(data);
+      setArticles(data); // Set articles to user's favorite articles
     } catch (error) {
       setError(error.message);
     } finally {
       setLoading(false);
     }
   }, [auth.isLoggedIn, auth.userId]);
+
 
   // Add/remove article from favorites
   const toggleFavorite = async (article) => {
@@ -171,6 +198,7 @@ const WelcomePage = () => {
       return;
     }
     
+    // Check if article is already in favorites
     const isFavorite = favoriteArticles.has(article.id);
     
     try {
@@ -189,9 +217,9 @@ const WelcomePage = () => {
         }
         
         // Update local state
-        const newFavorites = new Set(favoriteArticles);
-        newFavorites.delete(article.id);
-        setFavoriteArticles(newFavorites);
+        const newFavorites = new Set(favoriteArticles); // Create a new set
+        newFavorites.delete(article.id); // Remove the article ID
+        setFavoriteArticles(newFavorites); // Update the state
         
         // If in favorites mode, remove this article from the display
         if (mode === "favorites") {
@@ -212,9 +240,9 @@ const WelcomePage = () => {
         }
         
         // Update local state
-        const newFavorites = new Set(favoriteArticles);
-        newFavorites.add(article.id);
-        setFavoriteArticles(newFavorites);
+        const newFavorites = new Set(favoriteArticles); // Create a new set
+        newFavorites.add(article.id); // Add the article ID
+        setFavoriteArticles(newFavorites); // Update the state
       }
     } catch (error) {
       console.error("Error toggling favorite:", error);
@@ -222,6 +250,8 @@ const WelcomePage = () => {
     }
   };
 
+
+  // Function to handle different modes
   useEffect(() => {
     if (mode === "search") {
       handleSearch();
@@ -234,29 +264,32 @@ const WelcomePage = () => {
     }
   }, [mode, submittedQuery, selectedCategory, currentPage, handleSearch, fetchTopHeadlines, fetchCategoryArticles, showFavorites]);
 
-  // Load user's favorites when component mounts or auth changes
+  
+  // Load user's favorites on login
   useEffect(() => {
     if (auth.isLoggedIn) {
       fetchFavoriteArticles();
     }
   }, [auth.isLoggedIn, fetchFavoriteArticles]);
 
+
   // Handle category selection
   const handleCategorySelect = (category) => {
-    setSearchQuery(category);
+    setSearchQuery(category); // Set search query to category
     setCurrentPage(1);
     setMode("category");
     setSelectedCategory(category);
     setResetCategory(false);
   };
 
-  // Handle form submission for search
+
+  // Handle search query submission
   const handleFormSubmit = (e) => {
     e.preventDefault();
     if (searchQuery) {
-      setSelectedCategory(""); // Reset selected category
-      setCurrentPage(1); // Reset to page 1 when searching
-      setMode("search"); // Set mode to search
+      setSelectedCategory(""); // Reset selected category if any
+      setCurrentPage(1); 
+      setMode("search");
       setResetCategory(true);
       setTimeout(() => {
           setSubmittedQuery(searchQuery);
@@ -264,11 +297,13 @@ const WelcomePage = () => {
     }
   };
 
+
   // Logout user and redirect to login page
   const handleLogout = async () => {
     await logout();
     navigate('/');
   };
+
 
   return (
     <div className="container my-4">
@@ -276,12 +311,15 @@ const WelcomePage = () => {
       <Navbar onCategorySelect={handleCategorySelect} resetCategory={resetCategory} />
 
       <div className="d-flex justify-content-between align-items-center mb-4">
+        {/* Page Title */}
         <h3><b>
           {mode === "favorites" ? "My Favorite Articles" : 
            mode === "search" ? `Search Results: "${submittedQuery}"` :
            mode === "category" ? `${selectedCategory} News` :
            "Top Headlines"}
         </b></h3>
+
+        {/* Username Display, My Favorites Button, and Logout Button */}
         {auth.isLoggedIn && (
           <div className="d-flex flex-column align-items-end">
             <span className="username">{auth.username}</span>

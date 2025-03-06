@@ -7,6 +7,15 @@ import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import WelcomePage from './pages/WelcomePage';
 import ProtectedRoute from './components/ProtectedRoute';
 
+
+/*
+* App Component
+*
+* This is the main application component.
+* It sets up the routing for the application.
+* The AuthProvider component wraps the entire application.
+* This allows the AuthContext to be used in all components.
+*/
 function App() {
   return (
     <AuthProvider>

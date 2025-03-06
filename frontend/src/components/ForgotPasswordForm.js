@@ -1,6 +1,14 @@
 import React, { useState } from 'react';
 import '../Form.css';
 
+
+/*
+* ForgotPasswordForm Component
+*
+* A form component that allows users to reset their password.
+* It displays input fields for email and new password.
+* It also displays error/success messages.
+*/
 const ForgotPasswordForm = ({ onSubmit, error, isSubmitting, success, message }) => {
     const [email, setEmail] = useState('');
     const [newPassword, setNewPassword] = useState('');
@@ -11,6 +19,7 @@ const ForgotPasswordForm = ({ onSubmit, error, isSubmitting, success, message })
         setNewPassword('');
     };
 
+    // Handle form submission
     const handleSubmit = (e) => {
         e.preventDefault();
         onSubmit(email, newPassword, resetFields);
@@ -22,6 +31,7 @@ const ForgotPasswordForm = ({ onSubmit, error, isSubmitting, success, message })
                 <h1 className="brand">QuickByte</h1>
                 <h1 className="text-center mb-4">Reset Password</h1>
 
+                {/* Display message based on if the request was successful or not */}
                 {error && (
                     <div className="error-message text-danger">
                         <p>{error}</p>
@@ -29,6 +39,7 @@ const ForgotPasswordForm = ({ onSubmit, error, isSubmitting, success, message })
                 )}
                 {message && <p className="success-message text-success">{message}</p>}
 
+                {/* Input fields for email and new password */}
                 <div className="mb-3">
                     <input
                         type="email"
@@ -64,11 +75,13 @@ const ForgotPasswordForm = ({ onSubmit, error, isSubmitting, success, message })
             
                     {error?.newPassword && <p className="error-message text-danger">{error.newPassword}</p>}
 
+                    {/* Reset Password button */}
                     <button type="submit" className="btn btn-primary w-100 mt-3" disabled={isSubmitting}>
                         {isSubmitting ? 'Resetting...' : 'Reset Password'}
                     </button>
                 </div>
                 
+                {/* Link to go back to login page */}
                 <p className="mt-3 text-center">
                     Go back to: <a href="/">Login</a>
                 </p>

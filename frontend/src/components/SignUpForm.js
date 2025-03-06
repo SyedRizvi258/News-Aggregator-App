@@ -1,6 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import '../Form.css';
 
+
+/*
+* SignUpForm Component
+*
+* A form component that allows users to sign up.
+* It displays input fields for username, email, and password.
+* It also displays error/success messages.
+*/
 const SignUpForm = ({ onSubmit, error, success }) => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
@@ -8,6 +16,7 @@ const SignUpForm = ({ onSubmit, error, success }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false); 
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -15,7 +24,7 @@ const SignUpForm = ({ onSubmit, error, success }) => {
     setIsSubmitting(false);
   };
 
-  // Use useEffect to reset form fields when success changes to true
+  // Clear username, email, and password fields on successful sign up
   useEffect(() => {
     if (success) {
       setUsername('');
@@ -30,6 +39,7 @@ const SignUpForm = ({ onSubmit, error, success }) => {
         <h1 className="brand">QuickByte</h1>
         <h1 className="text-center mb-4">Sign Up</h1>
         
+        {/* Display message based on if the request was successful or not */}
         {error && !error.username && !error.email && !error.password && (
           <div className="error-message text-danger">
             {Object.keys(error).map((key) => (
@@ -39,6 +49,7 @@ const SignUpForm = ({ onSubmit, error, success }) => {
         )}
         {success && <p className="success-message text-success">{success}</p>}
         
+        {/* Input fields for username, email, and password */}
         <div className="mb-3">
           <input
             type="text"
@@ -86,11 +97,13 @@ const SignUpForm = ({ onSubmit, error, success }) => {
           </div>
           {error?.password && <p className="error-message text-danger">{error.password}</p>}
         
+          {/* Register button */}
           <button type="submit" className="btn btn-primary w-100 mt-3" disabled={isSubmitting}>
             {isSubmitting ? "Registering..." : "Register"}
           </button>
         </div>
         
+        {/* Link to go back to login page */}
         <p className="mt-3 text-center">
           Already have an account? <a href="/">Log in</a>
         </p>

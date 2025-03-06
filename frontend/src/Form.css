@@ -13,7 +13,7 @@
 .error-message {
   color: red;
   font-size: 0.9rem;
-  margin-top: 5px; /* Space between input and error message */
+  margin-top: 5px; 
   display: block;
   word-wrap: break-word;
   white-space: pre-line;
@@ -22,7 +22,7 @@
 .success-message {
   color: green;
   font-size: 0.9rem;
-  margin-top: 5px; /* Space between input and error message */
+  margin-top: 5px;
   display: block;
   word-wrap: break-word;
   white-space: normal;
@@ -55,24 +55,24 @@
 }
 
 .password-container {
-  position: relative; /* Enables absolute positioning for child elements */
-  margin-bottom: 10px; /* Add space between the input and any following elements */
+  position: relative;
+  margin-bottom: 10px;
 }
 
 .password-toggle {
-  position: absolute; /* Aligns the button inside the input field */
-  right: 10px; /* Aligns to the right edge */
-  top: 50%; /* Vertically centers */
-  transform: translateY(-50%); /* Centers vertically */
-  background: none; /* Optional: Transparent background */
-  border: none; /* Removes border for cleaner look */
-  color: #007bff; /* Button text color */
-  cursor: pointer; /* Pointer cursor for clarity */
-  font-size: 0.9rem; /* Smaller button text */
+  position: absolute;
+  right: 10px;
+  top: 50%; 
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #007bff;
+  cursor: pointer;
+  font-size: 0.9rem;
 }
 
 .password-toggle:focus {
-  outline: 2px solid #007bff; /* Blue focus ring for better visibility */
+  outline: 2px solid #007bff;
   outline-offset: 2px;
 }
 

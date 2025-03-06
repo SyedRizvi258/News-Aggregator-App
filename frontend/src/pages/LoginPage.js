@@ -3,13 +3,19 @@ import { useNavigate } from 'react-router-dom';
 import LoginForm from '../components/LoginForm';
 import { useAuth } from '../contexts/AuthContext';
 
+
+/*
+* LoginPage
+*
+* A page that allows users to log in.
+* It contains the LoginForm component.
+*/
 const LoginPage = () => {
     const { login } = useAuth(); // Destructure login function from AuthContext
     const [error, setError] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [success, setSuccess] = useState(false);
     const navigate = useNavigate();
-
 
     const handleLogin = async (email, password) => {
         setError(null);
@@ -29,15 +35,16 @@ const LoginPage = () => {
                 throw new Error(responseData.error || 'Login failed'); // Use the 'error' field from the backend
             }
 
+            // Call the login function from the AuthContext
             login(responseData.username, responseData.userId);
 
             setSuccess(true); // Set the success state to true
-            navigate('/home'); // Redirect to the home page
+            navigate('/home'); // Redirect to the home page (Welcome Page)
 
         } catch (err) {
-            setError(err.message); // Display the error message to the user
+            setError(err.message); // Display the error message
         } finally {
-            setIsSubmitting(false); // Reset the submission state
+            setIsSubmitting(false);
         }
     };
 
