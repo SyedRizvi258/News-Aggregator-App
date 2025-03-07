@@ -3,6 +3,6 @@ https://quickbyte-t50m.onrender.com/
 
 # News Aggregator App (Java)
 - Designed RESTful APIs with Spring Boot to deliver live news using NewsAPI, supporting dynamic content delivery.
-- Created a dynamic frontend with ReactJS, allowing users to select/search topics and view personalized news feeds.
-- Implemented secure user authentication with JWT and MongoDB Atlas, ensuring safe login and favorites storage.
-- Deployed backend and frontend on Render, using automated CI/CD pipelines for efficient integration & deployment.
+- Created a dynamic frontend with ReactJS, allowing users to select and search topics and view personalized news feeds.
+- Secured user authentication with JWT and stored user data in MongoDB Atlas, enabling authorized access and persistent storage of user data.
+- Deployed the application on Render with automated CI/CD pipelines, streamlining development and release cycles.
