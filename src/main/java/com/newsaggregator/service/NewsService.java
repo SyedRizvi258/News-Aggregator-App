@@ -2,10 +2,11 @@ package com.newsaggregator.service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Comparator;
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -123,8 +124,8 @@ public class NewsService {
 
     /**
      * Fetch top headlines from the News API based on the country code.
-     * If an error occurs during fetching, fallback to using the database to get headlines.
-     * Combines API results with database results to ensure no duplicates and applies pagination.
+     * If the API returns articles, returns them directly.
+     * If the API returns no articles or fails, falls back to a paged database query.
      * 
      * @param country The country code for which to fetch top headlines (e.g., "us" for United States).
      * @param page The page number.
@@ -134,43 +135,20 @@ public class NewsService {
     public List<NewsArticle> fetchTopHeadlinesWithFallback(String country, int page, int pageSize) {
         List<NewsArticle> apiArticles = fetchAndSaveTopHeadlines(country, page, pageSize);
 
-        // If an error occurred during API fetching, use database fallback
-        List<NewsArticle> dbArticles = newsArticleRepository.findByIsHeadlineTrue();
-
-        // Create a map of URL to article from API results
-        Map<String, NewsArticle> articleMap = new HashMap<>();
-        for (NewsArticle article : apiArticles) {
-            articleMap.put(article.getUrl(), article);
-        }
-        
-        // Add database articles to the map, overwriting any duplicates from the API
-        for (NewsArticle article : dbArticles) {
-            if (!articleMap.containsKey(article.getUrl())) {
-                articleMap.put(article.getUrl(), article);
-            }
-        }
-        
-        // Convert map values to list and sort by published date (newest first)
-        List<NewsArticle> allArticles = new ArrayList<>(articleMap.values());
-        allArticles.sort(Comparator.comparing(NewsArticle::getPublishedAt).reversed());
-        
-        // Apply pagination manually
-        int startIndex = (page - 1) * pageSize;
-        int endIndex = Math.min(startIndex + pageSize, allArticles.size());
-        
-        // Handle case where startIndex is beyond available articles
-        if (startIndex >= allArticles.size()) {
-            return new ArrayList<>();
+        if (!apiArticles.isEmpty()) {
+            return apiArticles;
         }
 
-        // Return the paginated list of articles
-        return allArticles.subList(startIndex, endIndex);
+        Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by(Sort.Direction.DESC, "publishedAt"));
+        Page<NewsArticle> dbPage = newsArticleRepository.findByIsHeadlineTrue(pageable);
+        return dbPage.getContent();
     }
 
 
     /**
      * Fetch and save news articles from the News API based on a search query.
-     * Combines API results with database results to ensure no duplicates and applies pagination.
+     * If the API returns articles, returns them directly.
+     * If the API returns no articles or fails, falls back to a paged database search.
      * 
      * @param query The search query to fetch news articles for.
      * @param sortBy The sorting criteria for the articles (e.g., "publishedAt").
@@ -189,38 +167,14 @@ public class NewsService {
         // Fetch and save articles from the API
         List<NewsArticle> apiArticles = fetchAndSaveArticles(url, false);
 
-        // Get articles from the database that match the search query
-        List<NewsArticle> dbArticles = newsArticleRepository.findByTitleContainingIgnoreCaseOrDescriptionContainingIgnoreCase(
-            query, query);
-        
-        // Create a map of URL to article from API results
-        Map<String, NewsArticle> articleMap = new HashMap<>();
-        for (NewsArticle article : apiArticles) {
-            articleMap.put(article.getUrl(), article);
+        if (!apiArticles.isEmpty()) {
+            return apiArticles;
         }
-        
-        // Combine API and database results, removing duplicates
-        for (NewsArticle article : dbArticles) {
-            if (!articleMap.containsKey(article.getUrl())) {
-                articleMap.put(article.getUrl(), article);
-            }
-        }
-        
-        // Convert map values to list and sort by published date (newest first)
-        List<NewsArticle> allArticles = new ArrayList<>(articleMap.values());
-        allArticles.sort(Comparator.comparing(NewsArticle::getPublishedAt).reversed());
-        
-        // Apply pagination manually
-        int startIndex = (page - 1) * pageSize;
-        int endIndex = Math.min(startIndex + pageSize, allArticles.size());
-        
-        // Handle case where startIndex is beyond available articles
-        if (startIndex >= allArticles.size()) {
-            return new ArrayList<>();
-        }
-        
-        // Return the paginated list of articles
-        return allArticles.subList(startIndex, endIndex);
+
+        Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by(Sort.Direction.DESC, "publishedAt"));
+        Page<NewsArticle> dbPage = newsArticleRepository.findByTitleContainingIgnoreCaseOrDescriptionContainingIgnoreCase(
+            query, query, pageable);
+        return dbPage.getContent();
     }
 
     
