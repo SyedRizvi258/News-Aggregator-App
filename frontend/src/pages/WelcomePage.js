@@ -38,6 +38,7 @@ const WelcomePage = () => {
   const [loading, setLoading] = useState(true); // State for loading spinner
   const [loadingFavorites, setLoadingFavorites] = useState(false); // Loading state for favorites
   const [error, setError] = useState(null); // State for error handling
+  const [refetchTrigger, setRefetchTrigger] = useState(0); // Trigger for forcing refetches
 
 
   // Fetch top headlines
@@ -262,7 +263,7 @@ const WelcomePage = () => {
     } else {
       fetchTopHeadlines();
     }
-  }, [mode, submittedQuery, selectedCategory, currentPage, handleSearch, fetchTopHeadlines, fetchCategoryArticles, showFavorites]);
+  }, [mode, submittedQuery, selectedCategory, currentPage, refetchTrigger, handleSearch, fetchTopHeadlines, fetchCategoryArticles, showFavorites]);
 
   
   // Load user's favorites on login
@@ -280,6 +281,7 @@ const WelcomePage = () => {
     setMode("category");
     setSelectedCategory(category);
     setResetCategory(false);
+    setRefetchTrigger(prev => prev + 1); // Force refetch
   };
 
 
@@ -438,6 +440,7 @@ const WelcomePage = () => {
                 setSubmittedQuery(submittedQuery); // Ensure search continues
               }
               setCurrentPage((prev) => prev + 1);
+              setRefetchTrigger(prev => prev + 1); // Force refetch
             }}
             className="btn btn-secondary ms-2"
             disabled={articles.length < pageSize}
